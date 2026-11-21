@@ -55,7 +55,7 @@ export function validateAnswer(answer, rows) {
   });
   return { findings, followup: findings.length ? answer.followup.trim() : "" };
 }
-export async function askModel(rows, question, model) {
+export async function askModel(rows, question, model, provider) {
   if (!rows.length) return { findings: [], followup: "" };
   const notes = rows.map(({ child, author, kind, date, body }, i) => ({
     number: i + 1,
@@ -65,22 +65,41 @@ export async function askModel(rows, question, model) {
     date,
     body,
   }));
-  let response;
-  try {
-    response = await fetch("http://127.0.0.1:11434/api/chat", {
-      method: "POST",
-      signal: AbortSignal.timeout(150000),
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+  const messages = [
+    { role: "system", content: instruction },
+    { role: "user", content: JSON.stringify({ question, notes }) },
+  ];
+  const isOllama = provider === "ollama";
+  const endpoint = isOllama
+    ? "http://127.0.0.1:11434/api/chat"
+    : "http://127.0.0.1:1234/v1/chat/completions";
+  const request = isOllama
+    ? {
         model,
+        messages,
         stream: false,
         format: schema,
         options: { temperature: 0, num_ctx: 16384, num_predict: 800 },
-        messages: [
-          { role: "system", content: instruction },
-          { role: "user", content: JSON.stringify({ question, notes }) },
-        ],
-      }),
+      }
+    : {
+        model,
+        messages,
+        stream: false,
+        temperature: 0,
+        max_tokens: 2400,
+        reasoning_effort: "none",
+        response_format: {
+          type: "json_schema",
+          json_schema: { name: "family_journal_answer", strict: true, schema },
+        },
+      };
+  let response;
+  try {
+    response = await fetch(endpoint, {
+      method: "POST",
+      signal: AbortSignal.timeout(180000),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(request),
     });
     if (!response.ok) throw new Error("unavailable");
   } catch {
@@ -88,7 +107,10 @@ export async function askModel(rows, question, model) {
   }
   let answer;
   try {
-    answer = JSON.parse((await response.json()).message.content);
+    const result = await response.json();
+    answer = JSON.parse(
+      isOllama ? result.message.content : result.choices[0].message.content,
+    );
   } catch {
     throw invalid("INVALID_MODEL_ANSWER", 502);
   }

@@ -19,9 +19,18 @@ const { values } = parseArgs({
   options: {
     port: { type: "string", default: "4187" },
     "data-dir": { type: "string" },
-    model: { type: "string", default: "qwen2.5:14b" },
+    model: { type: "string" },
+    provider: { type: "string" },
   },
 });
+// Existing calls with only an Ollama-tagged model keep their original runtime.
+const provider =
+  values.provider ?? (values.model?.includes(":") ? "ollama" : "lmstudio");
+if (!["lmstudio", "ollama"].includes(provider))
+  throw Error("Unknown model provider");
+const model =
+  values.model ??
+  (provider === "lmstudio" ? "qwen/qwen3.6-27b" : "qwen2.5:14b");
 const port = Number(values.port);
 if (!Number.isInteger(port) || port < 1 || port > 65535)
   throw Error("Invalid port");
@@ -92,7 +101,7 @@ const server = http.createServer(async (req, res) => {
     }
     if (req.method === "GET" && pathname === "/api/config") {
       const { samples, ...strings } = labels;
-      return json({ strings, today: day(), model: values.model });
+      return json({ strings, today: day(), provider, model });
     }
     if (req.method === "GET" && pathname === "/api/journal") {
       const scope = book(q.get("book"));
@@ -126,7 +135,7 @@ const server = http.createServer(async (req, res) => {
         store.list(scope, data.child, data.days),
         question,
       );
-      return json(await askModel(rows, question, values.model));
+      return json(await askModel(rows, question, model, provider));
     }
     throw invalid("NOT_FOUND", 404);
   } catch (error) {

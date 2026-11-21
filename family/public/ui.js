@@ -21,13 +21,18 @@ async function api(url, body) {
   if (!res.ok) throw Error(data.error.code);
   return data;
 }
-const { strings: t, model, today } = await api("/api/config");
+const { strings: t, provider, model, today } = await api("/api/config");
 document.title = t.brand;
 document.querySelectorAll("[data-t]").forEach((node) => {
   node.textContent = t[node.dataset.t];
 });
 el("#question").placeholder = t.askHint;
-el("#model").textContent = t.model + " · " + model;
+el("#model").textContent =
+  t.model +
+  " · " +
+  (provider === "lmstudio" ? "LM Studio" : "Ollama") +
+  " · " +
+  model;
 let scope = "demo",
   child = "",
   notes = [],
