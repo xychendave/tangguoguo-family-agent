@@ -17,6 +17,11 @@
       "types": "./src/sections.ts",
       "linger-production": "./dist/sections.js",
       "default": "./src/sections.ts"
+    },
+    "./search": {
+      "types": "./src/search.ts",
+      "linger-production": "./dist/search.js",
+      "default": "./src/search.ts"
     }
   },
   "scripts": {

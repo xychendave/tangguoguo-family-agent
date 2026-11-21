@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Family Agent</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="/style.css" />
+    <script type="module" src="/ui.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="brand">
+        <span class="mark" aria-hidden="true">✳</span><b data-t="brand"></b>
+      </div>
+      <nav id="books">
+        <button data-book="demo" data-t="demo"></button
+        ><button data-book="home" data-t="home"></button>
+      </nav>
+    </header>
+    <main>
+      <section class="intro">
+        <div>
+          <h1 data-t="title"></h1>
+          <p id="hint"></p>
+        </div>
+        <button class="primary" id="add" data-t="add"></button>
+      </section>
+      <div class="filter">
+        <label
+          ><span data-t="child"></span
+          ><select id="child"></select></label
+        ><label
+          ><span data-t="range"></span
+          ><select id="range">
+            <option value="7" data-t="week"></option>
+            <option value="14" selected data-t="fortnight"></option>
+            <option value="30" data-t="month"></option>
+            <option value="0" data-t="all"></option></select
+        ></label>
+      </div>
+      <p id="status" role="alert"></p>
+      <div class="grid">
+        <section class="timeline">
+          <div class="section-head">
+            <h2 data-t="history"></h2>
+            <div class="timeline-actions">
+              <small id="count"></small
+              ><button
+                type="button"
+                class="link"
+                id="export"
+                data-t="exportNotes"
+              ></button>
+            </div>
+          </div>
+          <div id="notes"></div>
+        </section>
+        <aside>
+          <div class="ask-head">
+            <span class="bubble" aria-hidden="true">✧</span>
+            <h2 data-t="askTitle"></h2>
+          </div>
+          <p data-t="askIntro"></p>
+          <div id="suggest"></div>
+          <form id="askform">
+            <label class="sr" for="question" data-t="questionLabel"></label
+            ><textarea
+              id="question"
+              rows="3"
+              maxlength="500"
+              required
+            ></textarea
+            ><button class="primary" id="ask" data-t="ask"></button>
+          </form>
+          <div id="answer" aria-live="polite"></div>
+          <small id="model"></small>
+        </aside>
+      </div>
+    </main>
+    <dialog id="editor">
+      <form id="writeform">
+        <div class="section-head">
+          <h2 data-t="compose"></h2>
+          <button type="button" id="cancel" data-t="cancel"></button>
+        </div>
+        <p data-t="shared"></p>
+        <div class="fields">
+          <label
+            ><span data-t="child"></span
+            ><input
+              name="child"
+              maxlength="40"
+              required
+              list="children" /></label
+          ><datalist id="children"></datalist
+          ><label
+            ><span data-t="observer"></span
+            ><input name="author" maxlength="40" required /></label
+          ><label
+            ><span data-t="day"></span
+            ><input name="date" type="date" required /></label
+          ><label
+            ><span data-t="kind"></span
+            ><select name="kind">
+              <option value="observation" data-t="observation"></option>
+              <option value="quote" data-t="quote"></option>
+              <option value="work" data-t="work"></option></select
+          ></label>
+        </div>
+        <label
+          ><span data-t="body"></span
+          ><textarea name="body" rows="5" maxlength="2000" required></textarea>
+        </label>
+        <p id="editerror" role="alert"></p>
+        <button class="primary" id="save" data-t="save"></button>
+      </form>
+    </dialog>
+  </body>
+</html>

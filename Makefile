@@ -48,7 +48,7 @@ SCRIPT_FAST_PURE_TESTS = $(filter-out $(SCRIPT_FAST_SPAWN_TESTS),$(SCRIPT_FAST_P
 # beside one lane that runs the heavy test suites one after another: their
 # timed tests fail when they share the CPU. BASE reaches the built-in Skill
 # immutability check inside check-teamhub.
-FAST_CHECKS := check-repository check-docs check-contracts check-packages \
+FAST_CHECKS := check-family check-repository check-docs check-contracts check-packages \
 	check-voice-runtime check-teamhub-cli check-installer check-desktop \
 	check-teamhub check-teamhub-tooling check-scripts-fast
 HEAVY_CHECKS := check-web check-node-services check-computer
@@ -297,3 +297,7 @@ contracts-generate:
 
 contracts-verify:
 	OAPI_CODEGEN_COMMAND='$(OAPI_CODEGEN_COMMAND)' pnpm exec tsx contracts/codegen/contracts.ts verify
+
+.PHONY: check-family
+check-family:
+	node --test family/journal.test.mjs

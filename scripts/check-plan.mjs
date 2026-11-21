@@ -44,6 +44,15 @@ const COMPUTER_GO_PATHS = [
 // `ci` is the CI `changes` output key; `local: false` keeps a CI-only target
 // out of `make check`; `always` targets run on every local plan.
 export const TARGETS = [
+  {
+    target: "check-family",
+    lane: "fast",
+    paths: [
+      "family/",
+      "packages/knowledge-format/src/search.ts",
+      "apps/web/src/i18n/locales/family.zh-CN.json",
+    ],
+  },
   { target: "check-repository", lane: "fast", always: true },
   { target: "check-docs", lane: "fast", always: true },
   {

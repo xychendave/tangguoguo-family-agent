@@ -1,3 +1,5 @@
+**Fork edition:** [Tangguoguo Family Agent: run the local parent journal](family/README.md)
+
 <p align="center"><img src="assets/logo-horizontal.svg" width="360" alt="Linger"></p>
 
 <p align="center"><b>Linger is an open-source personal agent with a Claude-class brain running locally on your PC.</b></p>
